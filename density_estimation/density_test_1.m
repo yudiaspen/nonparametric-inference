@@ -5,14 +5,15 @@ fun_map = @(x) [exp(x(:,1)+x(:,2)+1),(x(:,1)-1).^2,(x(:,2)-1).^2];
 num_dim_y_full = 3;num_dim_x_full = 2;
 
 % true density
-par_loc_x = ones(1,num_dim_x_full);
-par_scale_x= 0.2*ones(1,num_dim_x_full);
-par_corr_x = [];
-fun_pdf = @(x,par_loc_x,par_scale_x,par_corr_x) mvnpdf(x,par_loc_x,diag(par_scale_x.^2));
+par_loc = ones(1,num_dim_x_full);
+par_scale= 0.2*ones(1,num_dim_x_full);
+par_corr = [];
+par = [par_loc,par_scale,par_corr];
+fun_pdf = @(x,par) mvnpdf(x,par(1:num_dim_x_full),diag(par(num_dim_x_full+1:2*num_dim_x_full).^2));
 
 % generate data points
 rng(1);
-obs_x_pool_full = [normrnd(par_loc_x(1),par_scale_x(1),1e6,1),normrnd(par_loc_x(2),par_scale_x(2),1e6,1)];
+obs_x_pool_full = [normrnd(par_loc(1),par_scale(1),1e6,1),normrnd(par_loc(2),par_scale(2),1e6,1)];
 obs_y_pool_full = fun_map(obs_x_pool_full);
 
 % naive integration
@@ -46,5 +47,6 @@ density_moment;
 density_coef;
 
 % only consider estimated x
-indices_x=[1,2];num_dim_x=length(indices_x); 
+indices_x=[1,2];num_dim_x=length(indices_x);
+moment_obs_y(:,1)=moment_pdfsmp_y;
 density_estimate_p;

@@ -6,14 +6,16 @@ fun_map = @(x) [exp(x(:,1)+x(:,2)+1),(x(:,1)-1).^2,(x(:,2)-1).^2];
 num_dim_y_full = 3;num_dim_x_full = 2;
 
 % true density
-par_loc_x = ones(1,num_dim_x_full);
-par_scale_x= 0.2*ones(1,num_dim_x_full);
-par_corr_x = -.5;
-fun_pdf = @(x,par_loc_x,par_scale_x,par_corr_x) mvnpdf(x,par_loc_x,diag(par_scale_x(1:num_dim_x_full).^2)+flip(diag(prod(par_scale_x)*par_corr_x*ones(1,num_dim_x_full))));
+par_loc = ones(1,num_dim_x_full);
+par_scale= 0.2*ones(1,num_dim_x_full);
+par_corr = -.5;
+par = [par_loc,par_scale,par_corr];
+fun_pdf = @(x,par) mvnpdf(x,par(1:num_dim_x_full),diag(par(1+num_dim_x_full:2*num_dim_x_full).^2)...
+            +flip(diag(prod(par(1+num_dim_x_full:2*num_dim_x_full))*par(2*num_dim_x_full+1:end)*ones(1,num_dim_x_full))));
 
 % generate data points
 rng(1);
-obs_x_pool_full = mvnrnd(par_loc_x,diag(par_scale_x.^2)+flip(diag(prod(par_scale_x)*par_corr_x*ones(1,num_dim_x_full))),1e6);
+obs_x_pool_full = mvnrnd(par_loc,diag(par_scale.^2)+flip(diag(prod(par_scale)*par_corr*ones(1,num_dim_x_full))),1e6);
 obs_y_pool_full = fun_map(obs_x_pool_full);
 
 % naive integration
@@ -32,7 +34,7 @@ num_sample=2000;
 num_obs = 250;
 num_smp = 1e5;
 num_smp_iter = 1e4;
-num_sample_test=2;
+num_sample_test=200;
 
 % only consider observed y
 indices_y=[1,2,3];num_dim_y=length(indices_y); 

@@ -6,15 +6,15 @@ fun_map = @(x) [exp(x(:,1)+x(:,2)+1),(x(:,1)-1).^2,(x(:,2)-1).^2];
 num_dim_y_full = 3;num_dim_x_full = 2;
 
 % true density
-par_loc_x = ones(1,num_dim_x_full)*-.1;
-par_scale_x= 0.2*ones(1,num_dim_x_full);
-par_corr_x = [];
-
-fun_pdf = @(x,par_loc_x,par_scale_x, par_corr_x) lognpdf(x(:,1),par_loc_x(1),par_scale_x(1)).*lognpdf(x(:,2),par_loc_x(2),par_scale_x(2));
+par_loc = ones(1,num_dim_x_full)*-.1;
+par_scale= 0.2*ones(1,num_dim_x_full);
+par_corr = [];
+par = [par_loc,par_scale,par_corr];
+fun_pdf = @(x,par) lognpdf(x(:,1),par(1),par(3)).*lognpdf(x(:,2),par(2),par(4));
 
 % generate data points
 rng(1);
-obs_x_pool_full = [lognrnd(par_loc_x(1),par_scale_x(1),1e6,1),lognrnd(par_loc_x(2),par_scale_x(2),1e6,1)];
+obs_x_pool_full = [lognrnd(par_loc(1),par_scale(1),1e6,1),lognrnd(par_loc(2),par_scale(2),1e6,1)];
 obs_y_pool_full = fun_map(obs_x_pool_full);
 
 % naive integration
@@ -33,7 +33,7 @@ num_sample=200;
 num_obs = 250;
 num_smp = 1e5;
 num_smp_iter = 1e4;
-num_sample_test=2;
+num_sample_test=200;
 
 % only consider observed y
 indices_y=[1,2,3];num_dim_y=length(indices_y); 
