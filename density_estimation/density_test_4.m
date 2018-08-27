@@ -31,7 +31,7 @@ if ~exist('pdf_aux','var')
 end
 
 % estimation specification
-num_sample=200;
+num_sample=400;
 num_obs = 250;
 num_smp = 1e5;
 num_smp_iter = 1e4;

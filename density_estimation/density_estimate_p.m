@@ -25,14 +25,16 @@ for i=1:num_sample_test
     rand_sim= randsample(num_smp,num_smp_iter);
     gmmweight=inv(sigmadata+num_obs/length(rand_sim)*sigmasimulation);
     fitness=@(param)gmmobj(param,smp_x_full(rand_sim,indices_x),coef_cpl(rand_sim,moment_select)*num_smp/num_smp_iter,moment_obs_y(moment_select,i),gmmweight,fun_pdf);
-    tic
+    
     disp("Sample "+num2str(i));
     flag = 1;
     while flag
         disp("Trial "+num2str(flag));
         est_init = rand(size(par)).*[ones(1,num_dim_x),par_scale*4.8,ones(1,num_corr)*1.9]+[par_loc-.5,par_scale*.1,ones(1,num_corr)*-.95];
+        tic
         [est_total_temp]=  fmincon(fitness,est_init,[],[],[],[] ,[par_loc-.5,par_scale*.2,ones(1,num_corr)*-.9],[par_loc+.5,par_scale*10,ones(1,num_corr)*.9],[],options);
-        if fitness(est_total_temp)<fitness(par)+1e-6 || flag>10, flag = 0; else, flag=flag+1; end
+        toc
+        if fitness(est_total_temp)<fitness(par)+1e-6 || flag>0, flag = 0; else, flag=flag+1; end
     end
     est_total(i,:)=est_total_temp;
     obj_val(i) = fitness(est_total_temp);obj_fit(i) = fitness(par);

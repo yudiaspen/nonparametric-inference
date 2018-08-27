@@ -22,9 +22,11 @@ for i=1:size(momentlist,1)
 end
 toc
 
+num_weight=1e4;
+
 %------------------------------------------------------------------------------
 tic
- [sigmadata]=weight_obs(obs_pool_y(1:1e4,:),moment_obs_pool_y(moment_select),momentlist(moment_select,:));
+ [sigmadata]=weight_obs(obs_pool_y(1:num_weight,:),moment_obs_pool_y(moment_select),momentlist(moment_select,:));
 toc
 
-sigmasimulation=weight_smp(smp_y(1:1e4,:),1./fun_pdf_smp(smp_x_full(1:1e4,:)).*fun_pdf(smp_x_full(1:1e4,:),par),moment_obs_pool_y(moment_select),momentlist(moment_select,:));
+sigmasimulation=weight_smp(smp_y(1:num_weight,:),1./fun_pdf_smp(smp_x_full(1:num_weight,:)).*fun_pdf(smp_x_full(1:num_weight,:),par),moment_obs_pool_y(moment_select),momentlist(moment_select,:));
